@@ -1,5 +1,5 @@
 from pydantic import EmailStr
-from app.repositories.user_repository import get_user_by_email, get_user_by_id, save_password_to_history, get_password_history
+from app.repositories.user_repository import get_user_by_email, save_password_to_history, get_password_history
 from fastapi import HTTPException
 from app.core.auth import hash_password, verify_password
 
@@ -21,3 +21,7 @@ def get_user_profile(db, email: EmailStr):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
+def get_user_email_password(email:EmailStr, password:str, db):
+    user=get_user_email_password(db,EmailStr)
+    return user
+    

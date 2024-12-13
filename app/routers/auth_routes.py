@@ -4,29 +4,22 @@ from app.databse import get_db
 from app.repositories.user_repository import get_user_by_email, create_user, save_password_to_history
 from app.core.auth import create_access_token, hash_password, verify_password 
 from app.schemas.auth_schemas import Token, UserCreateRequest, UserLoginRequest
-from app.utils.email_utils import send_email
+from app.utils.validation_utils import validate_password 
 
 router = APIRouter()
 
 # User Registration
 @router.post("/register")
 def register(user: UserCreateRequest, db: Session = Depends(get_db)):
-    # Check if the email is already registered
+    # Validate the password
+    validate_password(user.password)
     existing_user = get_user_by_email(db, user.email)
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
-    # Hash the password
     hashed_password = hash_password(user.password)
-    
-    # Create user
     user = create_user(db, user.username, user.email, hashed_password)
-
-    # Save password history
     save_password_to_history(db, user.id, hashed_password)
-    
-    # Send confirmation email
-    #send_email(user.email, "Welcome to Our Service", "Thank you for registering with us!")
     
     return {"message": "User registered successfully"}
 
@@ -38,3 +31,4 @@ def login(user: UserLoginRequest, db: Session = Depends(get_db)):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     access_token = create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
+

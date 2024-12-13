@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from app.routers import auth_routes, user_routes
 from app.databse import engine, Base
 
-
 app = FastAPI()
 
 # Include routers for authentication and user-related routes
@@ -16,4 +15,3 @@ def read_root():
 @app.on_event("startup")
 def create_tables():
     Base.metadata.create_all(bind=engine)
-

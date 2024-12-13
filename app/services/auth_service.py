@@ -1,4 +1,4 @@
-from app.core.auth import hash_password, verify_password
+from app.core.auth import verify_password
 from app.repositories.user_repository import get_user_by_email
 from fastapi import HTTPException
 
