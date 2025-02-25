@@ -17,6 +17,9 @@ def register(user: UserCreateRequest, db: Session = Depends(get_db)):
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
 
+    
+    
+    
     hashed_password = hash_password(user.password)
     user = create_user(db, user.username, user.email, hashed_password)
     save_password_to_history(db, user.id, hashed_password)
@@ -27,8 +30,10 @@ def register(user: UserCreateRequest, db: Session = Depends(get_db)):
 @router.post("/login", response_model=Token)
 def login(user: UserLoginRequest, db: Session = Depends(get_db)):
     db_user = get_user_by_email(db, user.email)
+    print(db)
+    if not db_user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
     if not verify_password(user.password, db_user.password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
     access_token = create_access_token(data={"sub": user.email})
     return {"access_token": access_token, "token_type": "bearer"}
-

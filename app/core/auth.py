@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-from fastapi import Header
-from jose import JWTError, jwt
+from fastapi import Header,HTTPException, Depends
+from jose import JWTError, jwt 
 from passlib.context import CryptContext
 from app.core.config import ACCESS_TOKEN_EXPIRE_MINUTES, ALGORITHM, SECRET_KEY
 
@@ -19,14 +19,17 @@ def create_access_token(data: dict) -> str:
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 def decode_token(authorization: str = Header(None)) -> dict:
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Authorization header missing")
+
+    if not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization header format")
+    
+    token = authorization.split(" ")[1]
+    
     try:
-        print("authorization" +authorization)
-        if not authorization.startswith("Bearer "):
-            raise JWTError("Invalid authorization header format")
-        token = authorization.split(" ")[1]
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload
     except JWTError:
-        return None
-
+        raise HTTPException(status_code=401, detail="Invalid or expired token")
 

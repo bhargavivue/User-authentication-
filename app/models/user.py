@@ -12,3 +12,9 @@ class User(Base):
 
     # Relationship to password history (one-to-many)
     password_history = relationship("PasswordHistory", back_populates="user")
+# Relationship to password history (one-to-many)
+    password_history = relationship(
+        "PasswordHistory", 
+        back_populates="user", 
+        cascade="all, delete"
+    )

@@ -1,3 +1,5 @@
+
+from typing import Annotated
 from fastapi import FastAPI
 from app.routers import auth_routes, user_routes
 from app.databse import engine, Base

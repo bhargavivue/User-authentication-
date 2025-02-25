@@ -21,7 +21,6 @@ def get_user_profile(db, email: EmailStr):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
-def get_user_email_password(email:EmailStr, password:str, db):
-    user=get_user_email_password(db,EmailStr)
-    return user
-    
+#def get_user_email_password(email:EmailStr, password:str, db):
+    #user=get_user_email_password(db,EmailStr)
+    #return user
