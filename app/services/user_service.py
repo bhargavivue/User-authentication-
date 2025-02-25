@@ -1,5 +1,5 @@
 from pydantic import EmailStr
-from app.repositories.user_repository import get_user_by_email, save_password_to_history, get_password_history
+from app.repositories.user_repository import get_user_by_email, save_password_to_history, get_password_history, update_user
 from fastapi import HTTPException
 from app.core.auth import hash_password, verify_password
 
@@ -13,6 +13,7 @@ def change_password(db, user_id: int, new_password: str):
     # Hash the new password and save it
     hashed_password = hash_password(new_password)
     save_password_to_history(db, user_id, hashed_password)
+    update_user(db, user_id, hashed_password)
     return {"message": "Password changed successfully"}
 
 # Get User Profile Service

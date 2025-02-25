@@ -28,3 +28,12 @@ def save_password_to_history(db: Session, user_id: int, hashed_password: str):
 # Get password history for a user
 def get_password_history(db: Session, user_id: int):
     return db.query(PasswordHistory).filter(PasswordHistory.user_id == user_id).order_by(PasswordHistory.id.desc()).limit(6).all()
+
+def update_user(db: Session, user_id: int, hashed_password: str):
+    user = db.query(User).filter(User.id == user_id).first()
+    if not user:
+        return None  # Handle case where user does not exist
+    user.password = hashed_password
+    db.commit()
+    db.refresh(user)  # Refresh to get the updated user
+    return {"message":"user password updated"}
